@@ -1,99 +1,68 @@
-<!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
-<p align="center">
-  <a href="https://www.gatsbyjs.org">
-    <img alt="Gatsby" src="https://www.gatsbyjs.org/monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Gatsby's default starter
-</h1>
+## React-Admin on Gatsby
 
-Kick off your project with this default boilerplate. This starter ships with the main Gatsby configuration files you might need to get up and running blazing fast with the blazing fast app generator for React.
+Testing using react-admin with gatsby.
 
-_Have another more specific idea? You may want to check out our vibrant collection of [official and community-created starters](https://www.gatsbyjs.org/docs/gatsby-starters/)._
+## Development/Issues
 
-## 🚀 Quick start
+gatsby new "...."
+yarn add react-admin ra-data-json-server prop-types
 
-1.  **Create a Gatsby site.**
+```
+> gatsby develop
+> ...
+> ...
+> OK
+```
 
-    Use the Gatsby CLI to create a new site, specifying the default starter.
+```
+> gatsby develop
+> ...
+```
 
-    ```shell
-    # create a new Gatsby site using the default starter
-    gatsby new my-default-starter https://github.com/gatsbyjs/gatsby-starter-default
-    ```
+![alt text](https://imgur.com/6M6XtME.png)
 
-1.  **Start developing.**
+Even with 'gatsby --verbose build', not much information on the source of the issue is displayed.
 
-    Navigate into your new site’s directory and start it up.
+From https://www.gatsbyjs.org/docs/debugging-html-builds/,
+the top reasons include:
 
-    ```shell
-    cd my-default-starter/
-    gatsby develop
-    ```
+1. using "browser globals like window or document" will cause an error at this step since only node apis will be available.
 
-1.  **Open the source code and start editing!**
+- Here is the query results for [window](https://github.com/marmelab/react-admin/search?q=window&unscoped_q=window) and [document](https://github.com/marmelab/react-admin/search?q=document&unscoped_q=document), the react-admin falsey checks at the moment may not be enough.
 
-    Your site is now running at `http://localhost:8000`!
+2. using import and require in the same file.
 
-    _Note: You'll also see a second link: _`http://localhost:8000/___graphql`_. This is a tool you can use to experiment with querying your data. Learn more about using this tool in the [Gatsby tutorial](https://www.gatsbyjs.org/tutorial/part-five/#introducing-graphiql)._
+I Also tried to add the code below to gatsby-node.js so that if the reason is 1), potentially this would potentially fix the problem by replacing the "offending module with a dummy module during server rendering".
 
-    Open the `my-default-starter` directory in your code editor of choice and edit `src/pages/index.js`. Save your changes and the browser will update in real time!
+```javascript
+exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
+  if (stage === "build-html") {
+    actions.setWebpackConfig({
+      module: {
+        rules: [
+          {
+            test: /bad-module/,
+            use: loaders.null(),
+          },
+        ],
+      },
+    })
+  }
+}
+```
 
-## 🧐 What's inside?
+Reading through [react-admin data provider docs](https://marmelab.com/react-admin/DataProviders.html), I tried to add in the minimal data provider code needed for admin to veryify that this was not part of the issue.
 
-A quick look at the top-level files and directories you'll see in a Gatsby project.
+I also tried to implement the [Admin](https://marmelab.com/react-admin/Admin.html) component as its individual pieces to isolate the issue while also following examples from [Including React Admin In Another Redux Application](https://marmelab.com/react-admin/CustomApp.html).
 
-    .
-    ├── node_modules
-    ├── src
-    ├── .gitignore
-    ├── .prettierrc
-    ├── gatsby-browser.js
-    ├── gatsby-config.js
-    ├── gatsby-node.js
-    ├── gatsby-ssr.js
-    ├── LICENSE
-    ├── package-lock.json
-    ├── package.json
-    └── README.md
+Successful build while using [loadable component](https://www.gatsbyjs.org/docs/debugging-html-builds/), as this will skip Admin from building into static html. (React.lazy uses Suspense which is not compatible with gatsby build).
 
-1.  **`/node_modules`**: This directory contains all of the modules of code that your project depends on (npm packages) are automatically installed.
+This is a bypass to Gatsby SSG, so it is not an ideal solution. On the other hand if the admin page is part of a larger application where Gatsby is utilized, it is not a problem if the admin page is not being statically generated. SEO would not be an issue, and it should still be within reasonable react performance speed for admin use.
 
-2.  **`/src`**: This directory will contain all of the code related to what you will see on the front-end of your site (what you see in the browser) such as your site header or a page template. `src` is a convention for “source code”.
+Otherwise it will potentially take time to figure out the places where react-admin has issue in the build in places using browser API's or find try/catch blocks that may be hiding the error traceback.
 
-3.  **`.gitignore`**: This file tells git which files it should not track / not maintain a version history for.
+## Notes
 
-4.  **`.prettierrc`**: This is a configuration file for [Prettier](https://prettier.io/). Prettier is a tool to help keep the formatting of your code consistent.
-
-5.  **`gatsby-browser.js`**: This file is where Gatsby expects to find any usage of the [Gatsby browser APIs](https://www.gatsbyjs.org/docs/browser-apis/) (if any). These allow customization/extension of default Gatsby settings affecting the browser.
-
-6.  **`gatsby-config.js`**: This is the main configuration file for a Gatsby site. This is where you can specify information about your site (metadata) like the site title and description, which Gatsby plugins you’d like to include, etc. (Check out the [config docs](https://www.gatsbyjs.org/docs/gatsby-config/) for more detail).
-
-7.  **`gatsby-node.js`**: This file is where Gatsby expects to find any usage of the [Gatsby Node APIs](https://www.gatsbyjs.org/docs/node-apis/) (if any). These allow customization/extension of default Gatsby settings affecting pieces of the site build process.
-
-8.  **`gatsby-ssr.js`**: This file is where Gatsby expects to find any usage of the [Gatsby server-side rendering APIs](https://www.gatsbyjs.org/docs/ssr-apis/) (if any). These allow customization of default Gatsby settings affecting server-side rendering.
-
-9.  **`LICENSE`**: Gatsby is licensed under the MIT license.
-
-10. **`package-lock.json`** (See `package.json` below, first). This is an automatically generated file based on the exact versions of your npm dependencies that were installed for your project. **(You won’t change this file directly).**
-
-11. **`package.json`**: A manifest file for Node.js projects, which includes things like metadata (the project’s name, author, etc). This manifest is how npm knows which packages to install for your project.
-
-12. **`README.md`**: A text file containing useful reference information about your project.
-
-## 🎓 Learning Gatsby
-
-Looking for more guidance? Full documentation for Gatsby lives [on the website](https://www.gatsbyjs.org/). Here are some places to start:
-
-- **For most developers, we recommend starting with our [in-depth tutorial for creating a site with Gatsby](https://www.gatsbyjs.org/tutorial/).** It starts with zero assumptions about your level of ability and walks through every step of the process.
-
-- **To dive straight into code samples, head [to our documentation](https://www.gatsbyjs.org/docs/).** In particular, check out the _Guides_, _API Reference_, and _Advanced Tutorials_ sections in the sidebar.
-
-## 💫 Deploy
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-default)
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/gatsbyjs/gatsby-starter-default)
-
-<!-- AUTO-GENERATED-CONTENT:END -->
+Gatbsy Reach router: https://www.gatsbyjs.org/docs/reach-router-and-gatsby/
+Basic React-Admin setup: https://marmelab.com/react-admin/Tutorial.html
+Admin Comp: https://marmelab.com/react-admin/Admin.html
