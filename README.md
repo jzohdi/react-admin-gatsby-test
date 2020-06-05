@@ -5,6 +5,7 @@ Testing using react-admin with gatsby.
 ## Development/Issues
 
 gatsby new "...."
+
 yarn add react-admin ra-data-json-server prop-types
 
 ```
@@ -64,5 +65,16 @@ Otherwise it will potentially take time to figure out the places where react-adm
 ## Notes
 
 Gatbsy Reach router: https://www.gatsbyjs.org/docs/reach-router-and-gatsby/
+
 Basic React-Admin setup: https://marmelab.com/react-admin/Tutorial.html
+
 Admin Comp: https://marmelab.com/react-admin/Admin.html
+
+## TODO
+
+- [x] Setup gatsby
+- [x] intsall react-admin
+- [ ] properly connect react-admin to gatsby
+- [ ] set up fake data with graphql-faker
+      https://github.com/APIs-guru/graphql-faker
+- [ ] show faked data on react-admin
