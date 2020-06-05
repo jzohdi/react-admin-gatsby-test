@@ -1,6 +1,6 @@
 // import { fetchUtils } from "react-admin"
 import { stringify } from "query-string"
-
+import axios from "axios"
 const apiUrl = "https://jsonplaceholder.typicode.com"
 // const httpClient = fetchUtils.fetchJson
 
@@ -14,16 +14,12 @@ export default {
       filter: JSON.stringify(params.filter),
     }
     const url = `${apiUrl}/${resource}?${stringify(query)}`
-    return fetch(url)
-      .then(response => {
-        return response.json()
-      })
-      .then(json => {
-        return {
-          data: json,
-          total: 20,
-        }
-      })
+    return axios.get(url).then(json => {
+      return {
+        data: json,
+        total: 20,
+      }
+    })
   },
 
   //   getOne: (resource, params) =>
@@ -36,9 +32,7 @@ export default {
       filter: JSON.stringify({ id: params.ids }),
     }
     const url = `${apiUrl}/${resource}?${stringify(query)}`
-    return fetch(url)
-      .then(res => res.json())
-      .then(({ json }) => ({ data: json }))
+    return axios.get(url).then(({ json }) => ({ data: json }))
   },
 
   //   getManyReference: (resource, params) => {
