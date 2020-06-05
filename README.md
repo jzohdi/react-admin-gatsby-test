@@ -25,6 +25,8 @@ Testing using react-admin with gatsby.
 
 Even with 'gatsby --verbose build', not much information on the source of the issue is displayed.
 
+[gatsby issue](https://github.com/gatsbyjs/gatsby/issues/19759) addressing react-router-dom, and where it's used in [react-admin](https://github.com/marmelab/react-admin/search?q=react-router-dom&unscoped_q=react-router-dom)
+
 From https://www.gatsbyjs.org/docs/debugging-html-builds/,
 the top reasons include:
 
