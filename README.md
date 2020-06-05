@@ -4,9 +4,10 @@ Testing using react-admin with gatsby.
 
 ## Development/Issues
 
-gatsby new "...."
-
-yarn add react-admin ra-data-json-server prop-types
+```
+> gatsby new "...."
+> yarn add react-admin ra-data-json-server prop-types
+```
 
 ```
 > gatsby develop
@@ -29,7 +30,7 @@ the top reasons include:
 
 1. using "browser globals like window or document" will cause an error at this step since only node apis will be available.
 
-- Here is the query results for [window](https://github.com/marmelab/react-admin/search?q=window&unscoped_q=window) and [document](https://github.com/marmelab/react-admin/search?q=document&unscoped_q=document), the react-admin falsey checks at the moment may not be enough.
+- Here are the query results for [window](https://github.com/marmelab/react-admin/search?q=window&unscoped_q=window) and [document](https://github.com/marmelab/react-admin/search?q=document&unscoped_q=document), the react-admin falsey checks at the moment may not be enough.
 
 2. using import and require in the same file.
 
